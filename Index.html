@@ -1,0 +1,149 @@
+{
+  "form": {
+    "id": "banco-questoes-uff",
+    "title": "Cadastro de Questões – Banco Institucional UFF",
+    "description": "Formulário para registro de questões objetivas para o banco institucional de avaliações.",
+    "theme": {
+      "primaryColor": "#003A8F",
+      "secondaryColor": "#E6EEF8",
+      "backgroundColor": "#F5F7FA",
+      "textColor": "#1F2933",
+      "borderRadius": "8px",
+      "fontFamily": "Inter, Roboto, Arial, sans-serif"
+    },
+    "webhook": {
+      "method": "POST",
+      "url": "https://SEU-ENDPOINT-N8N/webhook/banco-questoes-uff",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    },
+    "fields": [
+      {
+        "id": "email_professor",
+        "label": "E-mail institucional do professor",
+        "type": "text",
+        "placeholder": "nome@id.uff.br",
+        "required": true,
+        "validation": {
+          "format": "email",
+          "maxLength": 100
+        }
+      },
+      {
+        "id": "disciplina",
+        "label": "Disciplina",
+        "type": "select",
+        "required": true,
+        "options": [
+          "MIAI III-A",
+          "MICA III-A"
+        ]
+      },
+      {
+        "id": "modulo",
+        "label": "Módulo",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Anestesiologia",
+          "Dermatologia",
+          "Imunologia",
+          "Gastroenterologia",
+          "Farmacologia",
+          "Geriatria",
+          "Neurologia",
+          "Nefrologia",
+          "Pneumologia",
+          "Urologia",
+          "Equilíbrio hidroeletrolítico",
+          "Obstetrícia",
+          "Ginecologia",
+          "Neonatologia",
+          "Psiquiatria Infantil"
+        ]
+      },
+      {
+        "id": "tipo_questao",
+        "label": "Tipo de questão",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Múltipla escolha",
+          "Correlação"
+        ]
+      },
+      {
+        "id": "pergunta",
+        "label": "Enunciado da pergunta",
+        "type": "textarea",
+        "required": true,
+        "placeholder": "Digite o enunciado completo da questão...",
+        "validation": {
+          "maxLength": 1000
+        }
+      },
+      {
+        "id": "alternativas",
+        "label": "Alternativas",
+        "type": "repeatable",
+        "required": true,
+        "minItems": 2,
+        "maxItems": 5,
+        "item": {
+          "type": "object",
+          "fields": [
+            {
+              "id": "texto_alternativa",
+              "label": "Texto da alternativa",
+              "type": "text",
+              "required": true,
+              "validation": {
+                "maxLength": 200
+              }
+            },
+            {
+              "id": "correta",
+              "label": "Esta alternativa é:",
+              "type": "toggle",
+              "required": true,
+              "options": [
+                {
+                  "label": "Verdadeira",
+                  "value": true
+                },
+                {
+                  "label": "Falsa",
+                  "value": false
+                }
+              ],
+              "ui": {
+                "style": "button-group",
+                "trueColor": "#0F9D58",
+                "falseColor": "#DB4437"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "actions": [
+      {
+        "id": "submit",
+        "label": "Enviar questão",
+        "type": "submit",
+        "style": {
+          "backgroundColor": "#003A8F",
+          "textColor": "#FFFFFF",
+          "size": "large",
+          "icon": "send"
+        }
+      }
+    ],
+    "audit": {
+      "timestamp": true,
+      "clientIp": true,
+      "userAgent": true
+    }
+  }
+}
