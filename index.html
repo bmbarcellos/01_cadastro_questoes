@@ -1,149 +1,259 @@
-{
-  "form": {
-    "id": "banco-questoes-uff",
-    "title": "Cadastro de Questões – Banco Institucional UFF",
-    "description": "Formulário para registro de questões objetivas para o banco institucional de avaliações.",
-    "theme": {
-      "primaryColor": "#003A8F",
-      "secondaryColor": "#E6EEF8",
-      "backgroundColor": "#F5F7FA",
-      "textColor": "#1F2933",
-      "borderRadius": "8px",
-      "fontFamily": "Inter, Roboto, Arial, sans-serif"
-    },
-    "webhook": {
-      "method": "POST",
-      "url": "https://SEU-ENDPOINT-N8N/webhook/banco-questoes-uff",
-      "headers": {
-        "Content-Type": "application/json"
-      }
-    },
-    "fields": [
-      {
-        "id": "email_professor",
-        "label": "E-mail institucional do professor",
-        "type": "text",
-        "placeholder": "nome@id.uff.br",
-        "required": true,
-        "validation": {
-          "format": "email",
-          "maxLength": 100
-        }
-      },
-      {
-        "id": "disciplina",
-        "label": "Disciplina",
-        "type": "select",
-        "required": true,
-        "options": [
-          "MIAI III-A",
-          "MICA III-A"
-        ]
-      },
-      {
-        "id": "modulo",
-        "label": "Módulo",
-        "type": "select",
-        "required": true,
-        "options": [
-          "Anestesiologia",
-          "Dermatologia",
-          "Imunologia",
-          "Gastroenterologia",
-          "Farmacologia",
-          "Geriatria",
-          "Neurologia",
-          "Nefrologia",
-          "Pneumologia",
-          "Urologia",
-          "Equilíbrio hidroeletrolítico",
-          "Obstetrícia",
-          "Ginecologia",
-          "Neonatologia",
-          "Psiquiatria Infantil"
-        ]
-      },
-      {
-        "id": "tipo_questao",
-        "label": "Tipo de questão",
-        "type": "select",
-        "required": true,
-        "options": [
-          "Múltipla escolha",
-          "Correlação"
-        ]
-      },
-      {
-        "id": "pergunta",
-        "label": "Enunciado da pergunta",
-        "type": "textarea",
-        "required": true,
-        "placeholder": "Digite o enunciado completo da questão...",
-        "validation": {
-          "maxLength": 1000
-        }
-      },
-      {
-        "id": "alternativas",
-        "label": "Alternativas",
-        "type": "repeatable",
-        "required": true,
-        "minItems": 2,
-        "maxItems": 5,
-        "item": {
-          "type": "object",
-          "fields": [
-            {
-              "id": "texto_alternativa",
-              "label": "Texto da alternativa",
-              "type": "text",
-              "required": true,
-              "validation": {
-                "maxLength": 200
-              }
-            },
-            {
-              "id": "correta",
-              "label": "Esta alternativa é:",
-              "type": "toggle",
-              "required": true,
-              "options": [
-                {
-                  "label": "Verdadeira",
-                  "value": true
-                },
-                {
-                  "label": "Falsa",
-                  "value": false
-                }
-              ],
-              "ui": {
-                "style": "button-group",
-                "trueColor": "#0F9D58",
-                "falseColor": "#DB4437"
-              }
-            }
-          ]
-        }
-      }
-    ],
-    "actions": [
-      {
-        "id": "submit",
-        "label": "Enviar questão",
-        "type": "submit",
-        "style": {
-          "backgroundColor": "#003A8F",
-          "textColor": "#FFFFFF",
-          "size": "large",
-          "icon": "send"
-        }
-      }
-    ],
-    "audit": {
-      "timestamp": true,
-      "clientIp": true,
-      "userAgent": true
-    }
-  }
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Cadastro de Questões – UFF</title>
+
+<style>
+:root {
+  --uff-blue: #003A8F;
+  --uff-light: #E6EEF8;
+  --bg: #F5F7FA;
+  --text: #1F2933;
+  --true: #0F9D58;
+  --false: #DB4437;
 }
+
+body {
+  margin: 0;
+  font-family: Inter, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 32px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+h1 {
+  color: var(--uff-blue);
+  margin-bottom: 5px;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin-top: 18px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: 1px solid #D1D5DB;
+  font-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.alternativa {
+  border: 1px solid #E5E7EB;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 12px;
+  background: var(--uff-light);
+}
+
+.toggle {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.toggle button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  opacity: .6;
+}
+
+.toggle button.active {
+  opacity: 1;
+}
+
+.btn-true { background: var(--true); }
+.btn-false { background: var(--false); }
+
+button.add {
+  margin-top: 15px;
+  background: transparent;
+  border: 1px dashed var(--uff-blue);
+  color: var(--uff-blue);
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button.submit {
+  margin-top: 30px;
+  width: 100%;
+  background: var(--uff-blue);
+  color: #fff;
+  padding: 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button.submit:hover {
+  background: #002a6a;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Cadastro de Questões</h1>
+  <p>Banco Institucional – Universidade Federal Fluminense</p>
+
+  <form id="questaoForm">
+
+    <label>E-mail institucional do professor</label>
+    <input type="email" name="email_professor" placeholder="nome@id.uff.br" required maxlength="100">
+
+    <label>Disciplina</label>
+    <select name="disciplina" required>
+      <option value="">Selecione</option>
+      <option>MIAI III-A</option>
+      <option>MICA III-A</option>
+    </select>
+
+    <label>Módulo</label>
+    <select name="modulo" required>
+      <option value="">Selecione</option>
+      <option>Anestesiologia</option>
+      <option>Dermatologia</option>
+      <option>Imunologia</option>
+      <option>Gastroenterologia</option>
+      <option>Farmacologia</option>
+      <option>Geriatria</option>
+      <option>Neurologia</option>
+      <option>Nefrologia</option>
+      <option>Pneumologia</option>
+      <option>Urologia</option>
+      <option>Equilíbrio hidroeletrolítico</option>
+      <option>Obstetrícia</option>
+      <option>Ginecologia</option>
+      <option>Neonatologia</option>
+      <option>Psiquiatria Infantil</option>
+    </select>
+
+    <label>Tipo de questão</label>
+    <select name="tipo_questao" required>
+      <option value="">Selecione</option>
+      <option>Múltipla escolha</option>
+      <option>Correlação</option>
+    </select>
+
+    <label>Enunciado da pergunta</label>
+    <textarea name="pergunta" maxlength="1000" rows="5" required
+      placeholder="Digite o enunciado completo da questão..."></textarea>
+
+    <label>Alternativas</label>
+    <div id="alternativas"></div>
+
+    <button type="button" class="add" onclick="addAlternativa()">+ Adicionar alternativa</button>
+
+    <button type="submit" class="submit">Enviar questão</button>
+
+  </form>
+</div>
+
+<script>
+const alternativasDiv = document.getElementById('alternativas');
+let altCount = 0;
+const MAX_ALT = 5;
+
+function addAlternativa() {
+  if (altCount >= MAX_ALT) return alert("Máximo de 5 alternativas.");
+
+  altCount++;
+  const div = document.createElement('div');
+  div.className = 'alternativa';
+
+  div.innerHTML = `
+    <input type="text" placeholder="Texto da alternativa"
+      maxlength="200" required>
+
+    <div class="toggle">
+      <button type="button" class="btn-true">Verdadeira</button>
+      <button type="button" class="btn-false active">Falsa</button>
+    </div>
+  `;
+
+  const [btnTrue, btnFalse] = div.querySelectorAll('button');
+  div.dataset.correta = "false";
+
+  btnTrue.onclick = () => {
+    btnTrue.classList.add('active');
+    btnFalse.classList.remove('active');
+    div.dataset.correta = "true";
+  };
+
+  btnFalse.onclick = () => {
+    btnFalse.classList.add('active');
+    btnTrue.classList.remove('active');
+    div.dataset.correta = "false";
+  };
+
+  alternativasDiv.appendChild(div);
+}
+
+addAlternativa();
+addAlternativa();
+
+document.getElementById('questaoForm').addEventListener('submit', e => {
+  e.preventDefault();
+
+  const form = e.target;
+  const alternativas = [];
+
+  document.querySelectorAll('.alternativa').forEach(div => {
+    alternativas.push({
+      texto: div.querySelector('input').value,
+      correta: div.dataset.correta === "true"
+    });
+  });
+
+  const payload = {
+    email_professor: form.email_professor.value,
+    disciplina: form.disciplina.value,
+    modulo: form.modulo.value,
+    tipo_questao: form.tipo_questao.value,
+    pergunta: form.pergunta.value,
+    alternativas,
+    timestamp: new Date().toISOString()
+  };
+
+  fetch("https://SEU-ENDPOINT-N8N/webhook/banco-questoes-uff", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).then(() => {
+    alert("Questão enviada com sucesso!");
+    location.reload();
+  });
+});
+</script>
+
+</body>
+</html>
+
