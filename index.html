@@ -22,7 +22,7 @@ body {
 }
 
 .container {
-  max-width: 900px;
+  max-width: 960px;
   margin: 40px auto;
   background: #fff;
   padding: 32px;
@@ -30,15 +30,7 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,.08);
 }
 
-h1 {
-  color: var(--uff-blue);
-  margin-bottom: 5px;
-}
-
-p {
-  margin-top: 0;
-  margin-bottom: 25px;
-}
+h1 { color: var(--uff-blue); }
 
 label {
   font-weight: 600;
@@ -46,11 +38,7 @@ label {
   margin-top: 18px;
 }
 
-small {
-  display: block;
-  margin-top: 4px;
-  color: var(--false);
-}
+small { color: var(--false); }
 
 input, select, textarea {
   width: 100%;
@@ -58,19 +46,20 @@ input, select, textarea {
   margin-top: 6px;
   border-radius: 6px;
   border: 1px solid #D1D5DB;
-  font-size: 14px;
 }
 
-textarea {
-  resize: vertical;
-}
-
-.alternativa {
-  border: 1px solid #E5E7EB;
-  padding: 15px;
-  border-radius: 6px;
-  margin-top: 12px;
+.section {
+  margin-top: 25px;
+  padding: 20px;
   background: var(--uff-light);
+  border-radius: 8px;
+}
+
+.alternativa, .par {
+  background: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 10px;
 }
 
 .toggle {
@@ -81,45 +70,43 @@ textarea {
 
 .toggle button {
   flex: 1;
-  padding: 8px;
   border: none;
+  padding: 8px;
   border-radius: 6px;
-  cursor: pointer;
   color: #fff;
-  opacity: .6;
+  opacity: .5;
+  cursor: pointer;
 }
 
-.toggle button.active {
-  opacity: 1;
-}
-
+.toggle button.active { opacity: 1; }
 .btn-true { background: var(--true); }
 .btn-false { background: var(--false); }
 
-button.add {
-  margin-top: 15px;
-  background: transparent;
-  border: 1px dashed var(--uff-blue);
-  color: var(--uff-blue);
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-button.submit {
-  margin-top: 30px;
+button.add, button.submit {
+  margin-top: 20px;
+  padding: 12px;
   width: 100%;
-  background: var(--uff-blue);
-  color: #fff;
-  padding: 14px;
-  font-size: 16px;
-  border: none;
   border-radius: 8px;
   cursor: pointer;
 }
 
-button.submit:hover {
-  background: #002a6a;
+button.add {
+  background: transparent;
+  border: 1px dashed var(--uff-blue);
+  color: var(--uff-blue);
+}
+
+button.submit {
+  background: var(--uff-blue);
+  color: #fff;
+  border: none;
+  font-size: 16px;
+}
+
+footer {
+  text-align: center;
+  margin: 30px 0;
+  color: #555;
 }
 </style>
 </head>
@@ -127,168 +114,110 @@ button.submit:hover {
 <body>
 
 <div class="container">
-  <h1>Cadastro de Questões</h1>
-  <p>Banco Institucional – Universidade Federal Fluminense</p>
+<h1>Cadastro de Questões</h1>
 
-  <form id="questaoForm">
+<form id="questaoForm">
 
-    <label>E-mail institucional do professor</label>
-    <input
-      type="email"
-      name="email_professor"
-      placeholder="nome@id.uff.br"
-      required
-      maxlength="100"
-      pattern="^[a-zA-Z0-9._%+-]+@id\.uff\.br$"
-      title="Utilize obrigatoriamente o e-mail institucional @id.uff.br">
-    <small>É obrigatório utilizar o e-mail institucional @id.uff.br</small>
+<label>E-mail institucional</label>
+<input type="email" name="email" required
+pattern="^[^@]+@id\.uff\.br$"
+placeholder="nome@id.uff.br">
+<small>Obrigatório e-mail institucional @id.uff.br</small>
 
-    <label>Disciplina</label>
-    <select name="disciplina" required>
-      <option value="">Selecione</option>
-      <option>MIAI III-A</option>
-      <option>MICA III-A</option>
-    </select>
+<label>Tipo de questão</label>
+<select id="tipo" required onchange="trocarTipo()">
+<option value="">Selecione</option>
+<option value="multipla">Múltipla escolha</option>
+<option value="correlacao">Correlação</option>
+</select>
 
-    <label>Módulo</label>
-    <select name="modulo" required>
-      <option value="">Selecione</option>
-      <option>Anestesiologia</option>
-      <option>Dermatologia</option>
-      <option>Imunologia</option>
-      <option>Gastroenterologia</option>
-      <option>Farmacologia</option>
-      <option>Geriatria</option>
-      <option>Neurologia</option>
-      <option>Nefrologia</option>
-      <option>Pneumologia</option>
-      <option>Urologia</option>
-      <option>Equilíbrio hidroeletrolítico</option>
-      <option>Obstetrícia</option>
-      <option>Ginecologia</option>
-      <option>Neonatologia</option>
-      <option>Psiquiatria Infantil</option>
-    </select>
+<!-- MÚLTIPLA ESCOLHA -->
+<div id="multipla" class="section" style="display:none">
+<label>Enunciado</label>
+<textarea id="perguntaME" maxlength="1000"></textarea>
 
-    <label>Tipo de questão</label>
-    <select name="tipo_questao" required>
-      <option value="">Selecione</option>
-      <option>Múltipla escolha</option>
-      <option>Correlação</option>
-    </select>
-
-    <label>Enunciado da pergunta</label>
-    <textarea
-      name="pergunta"
-      maxlength="1000"
-      rows="5"
-      required
-      placeholder="Digite o enunciado completo da questão..."></textarea>
-
-    <label>Alternativas</label>
-    <div id="alternativas"></div>
-
-    <button type="button" class="add" onclick="addAlternativa()">
-      + Adicionar alternativa
-    </button>
-
-    <button type="submit" class="submit">
-      Enviar questão
-    </button>
-
-  </form>
+<div id="alternativas"></div>
 </div>
 
+<!-- CORRELAÇÃO -->
+<div id="correlacao" class="section" style="display:none">
+<label>Enunciado</label>
+<textarea id="perguntaCOR" maxlength="1000"></textarea>
+
+<div id="pares"></div>
+<button type="button" class="add" onclick="addPar()">+ Adicionar associação</button>
+</div>
+
+<button type="submit" class="submit">Enviar questão</button>
+
+</form>
+</div>
+
+<footer>
+Sistema Eletrônico de Registro de Questões
+</footer>
+
 <script>
-const alternativasDiv = document.getElementById('alternativas');
-let altCount = 0;
-const MAX_ALT = 5;
+const altDiv = document.getElementById("alternativas");
+const paresDiv = document.getElementById("pares");
+
+function trocarTipo() {
+  document.getElementById("multipla").style.display = "none";
+  document.getElementById("correlacao").style.display = "none";
+  altDiv.innerHTML = "";
+  paresDiv.innerHTML = "";
+
+  if (tipo.value === "multipla") {
+    document.getElementById("multipla").style.display = "block";
+    for (let i = 0; i < 5; i++) addAlternativa();
+  }
+  if (tipo.value === "correlacao") {
+    document.getElementById("correlacao").style.display = "block";
+    for (let i = 0; i < 3; i++) addPar();
+  }
+}
 
 function addAlternativa() {
-  if (altCount >= MAX_ALT) {
-    alert("Máximo de 5 alternativas.");
-    return;
-  }
-
-  altCount++;
-
-  const div = document.createElement('div');
-  div.className = 'alternativa';
-  div.dataset.correta = "false";
-
-  div.innerHTML = `
-    <input type="text"
-      placeholder="Texto da alternativa"
-      maxlength="200"
-      required>
-
+  const d = document.createElement("div");
+  d.className = "alternativa";
+  d.dataset.correta = "false";
+  d.innerHTML = `
+    <input placeholder="Texto da alternativa" required>
     <div class="toggle">
       <button type="button" class="btn-true">Verdadeira</button>
       <button type="button" class="btn-false active">Falsa</button>
-    </div>
-  `;
-
-  const btnTrue = div.querySelector('.btn-true');
-  const btnFalse = div.querySelector('.btn-false');
-
-  btnTrue.onclick = () => {
-    btnTrue.classList.add('active');
-    btnFalse.classList.remove('active');
-    div.dataset.correta = "true";
-  };
-
-  btnFalse.onclick = () => {
-    btnFalse.classList.add('active');
-    btnTrue.classList.remove('active');
-    div.dataset.correta = "false";
-  };
-
-  alternativasDiv.appendChild(div);
+    </div>`;
+  const [v,f] = d.querySelectorAll("button");
+  v.onclick=()=>{v.classList.add("active");f.classList.remove("active");d.dataset.correta="true";}
+  f.onclick=()=>{f.classList.add("active");v.classList.remove("active");d.dataset.correta="false";}
+  altDiv.appendChild(d);
 }
 
-addAlternativa();
-addAlternativa();
+function addPar() {
+  const d = document.createElement("div");
+  d.className = "par";
+  d.innerHTML = `
+    <input placeholder="Coluna A" required>
+    <input placeholder="Coluna B" required>`;
+  paresDiv.appendChild(d);
+}
 
-document.getElementById('questaoForm').addEventListener('submit', e => {
+document.getElementById("questaoForm").onsubmit = e => {
   e.preventDefault();
+  const tipo = document.getElementById("tipo").value;
 
-  const form = e.target;
-  const alternativas = [];
-  let existeCorreta = false;
-
-  document.querySelectorAll('.alternativa').forEach(div => {
-    const texto = div.querySelector('input').value;
-    const correta = div.dataset.correta === "true";
-
-    if (correta) existeCorreta = true;
-
-    alternativas.push({ texto, correta });
-  });
-
-  if (!existeCorreta) {
-    alert("É obrigatório marcar pelo menos UMA alternativa como verdadeira.");
-    return;
+  if (tipo === "multipla") {
+    const alts = [...altDiv.children];
+    const corretas = alts.filter(a => a.dataset.correta === "true");
+    if (corretas.length !== 1)
+      return alert("A questão deve ter exatamente UMA alternativa correta.");
   }
 
-  const payload = {
-    email_professor: form.email_professor.value,
-    disciplina: form.disciplina.value,
-    modulo: form.modulo.value,
-    tipo_questao: form.tipo_questao.value,
-    pergunta: form.pergunta.value,
-    alternativas,
-    timestamp: new Date().toISOString()
-  };
+  if (tipo === "correlacao" && paresDiv.children.length < 3)
+    return alert("A questão de correlação deve ter no mínimo 3 associações.");
 
-  fetch("https://SEU-ENDPOINT-N8N/webhook/banco-questoes-uff", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  }).then(() => {
-    alert("Questão enviada com sucesso!");
-    location.reload();
-  });
-});
+  alert("Questão validada e pronta para envio ao n8n.");
+};
 </script>
 
 </body>
