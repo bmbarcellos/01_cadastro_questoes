@@ -21,8 +21,32 @@ body {
   color: var(--text);
 }
 
+/* Cabeçalho institucional */
+.header {
+  background: var(--uff-blue);
+  color: #fff;
+  text-align: center;
+  padding: 28px 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+.header h2 {
+  margin: 6px 0 0;
+  font-size: 16px;
+  font-weight: 400;
+  opacity: .9;
+}
+
+/* Conteúdo */
 .container {
-  max-width: 960px;
+  max-width: 980px;
   margin: 40px auto;
   background: #fff;
   padding: 32px;
@@ -30,15 +54,17 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,.08);
 }
 
-h1 { color: var(--uff-blue); }
-
 label {
   font-weight: 600;
   display: block;
   margin-top: 18px;
 }
 
-small { color: var(--false); }
+small {
+  color: var(--false);
+  display: block;
+  margin-top: 4px;
+}
 
 input, select, textarea {
   width: 100%;
@@ -47,6 +73,8 @@ input, select, textarea {
   border-radius: 6px;
   border: 1px solid #D1D5DB;
 }
+
+textarea { resize: vertical; }
 
 .section {
   margin-top: 25px;
@@ -113,39 +141,54 @@ footer {
 
 <body>
 
+<!-- CABEÇALHO -->
+<div class="header">
+  <h1>Universidade Federal Fluminense</h1>
+  <h2>Sistema Eletrônico de Registro de Questões</h2>
+</div>
+
+<!-- FORMULÁRIO -->
 <div class="container">
-<h1>Cadastro de Questões</h1>
 
 <form id="questaoForm">
 
 <label>E-mail institucional</label>
-<input type="email" name="email" required
+<input type="email" required
 pattern="^[^@]+@id\.uff\.br$"
 placeholder="nome@id.uff.br">
 <small>Obrigatório e-mail institucional @id.uff.br</small>
 
+<label>Grau de dificuldade</label>
+<select required>
+  <option value="">Selecione</option>
+  <option>Fácil</option>
+  <option>Médio</option>
+  <option>Difícil</option>
+</select>
+
 <label>Tipo de questão</label>
 <select id="tipo" required onchange="trocarTipo()">
-<option value="">Selecione</option>
-<option value="multipla">Múltipla escolha</option>
-<option value="correlacao">Correlação</option>
+  <option value="">Selecione</option>
+  <option value="multipla">Múltipla escolha</option>
+  <option value="correlacao">Correlação</option>
 </select>
+
+<label>Imagens de apoio (opcional)</label>
+<input type="file" id="imagens" accept=".jpg,.png" multiple>
 
 <!-- MÚLTIPLA ESCOLHA -->
 <div id="multipla" class="section" style="display:none">
-<label>Enunciado</label>
-<textarea id="perguntaME" maxlength="1000"></textarea>
-
-<div id="alternativas"></div>
+  <label>Enunciado</label>
+  <textarea id="perguntaME" maxlength="1000"></textarea>
+  <div id="alternativas"></div>
 </div>
 
 <!-- CORRELAÇÃO -->
 <div id="correlacao" class="section" style="display:none">
-<label>Enunciado</label>
-<textarea id="perguntaCOR" maxlength="1000"></textarea>
-
-<div id="pares"></div>
-<button type="button" class="add" onclick="addPar()">+ Adicionar associação</button>
+  <label>Enunciado</label>
+  <textarea id="perguntaCOR" maxlength="1000"></textarea>
+  <div id="pares"></div>
+  <button type="button" class="add" onclick="addPar()">+ Adicionar associação</button>
 </div>
 
 <button type="submit" class="submit">Enviar questão</button>
@@ -162,17 +205,18 @@ const altDiv = document.getElementById("alternativas");
 const paresDiv = document.getElementById("pares");
 
 function trocarTipo() {
-  document.getElementById("multipla").style.display = "none";
-  document.getElementById("correlacao").style.display = "none";
+  multipla.style.display = "none";
+  correlacao.style.display = "none";
   altDiv.innerHTML = "";
   paresDiv.innerHTML = "";
 
   if (tipo.value === "multipla") {
-    document.getElementById("multipla").style.display = "block";
+    multipla.style.display = "block";
     for (let i = 0; i < 5; i++) addAlternativa();
   }
+
   if (tipo.value === "correlacao") {
-    document.getElementById("correlacao").style.display = "block";
+    correlacao.style.display = "block";
     for (let i = 0; i < 3; i++) addPar();
   }
 }
@@ -181,15 +225,31 @@ function addAlternativa() {
   const d = document.createElement("div");
   d.className = "alternativa";
   d.dataset.correta = "false";
+
   d.innerHTML = `
     <input placeholder="Texto da alternativa" required>
     <div class="toggle">
       <button type="button" class="btn-true">Verdadeira</button>
       <button type="button" class="btn-false active">Falsa</button>
     </div>`;
+
   const [v,f] = d.querySelectorAll("button");
-  v.onclick=()=>{v.classList.add("active");f.classList.remove("active");d.dataset.correta="true";}
-  f.onclick=()=>{f.classList.add("active");v.classList.remove("active");d.dataset.correta="false";}
+
+  v.onclick = () => {
+    document.querySelectorAll(".alternativa").forEach(a => a.dataset.correta = "false");
+    document.querySelectorAll(".btn-true").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".btn-false").forEach(b => b.classList.add("active"));
+    v.classList.add("active");
+    f.classList.remove("active");
+    d.dataset.correta = "true";
+  };
+
+  f.onclick = () => {
+    f.classList.add("active");
+    v.classList.remove("active");
+    d.dataset.correta = "false";
+  };
+
   altDiv.appendChild(d);
 }
 
@@ -202,18 +262,16 @@ function addPar() {
   paresDiv.appendChild(d);
 }
 
-document.getElementById("questaoForm").onsubmit = e => {
+questaoForm.onsubmit = async e => {
   e.preventDefault();
-  const tipo = document.getElementById("tipo").value;
 
-  if (tipo === "multipla") {
-    const alts = [...altDiv.children];
-    const corretas = alts.filter(a => a.dataset.correta === "true");
+  if (tipo.value === "multipla") {
+    const corretas = [...altDiv.children].filter(a => a.dataset.correta === "true");
     if (corretas.length !== 1)
       return alert("A questão deve ter exatamente UMA alternativa correta.");
   }
 
-  if (tipo === "correlacao" && paresDiv.children.length < 3)
+  if (tipo.value === "correlacao" && paresDiv.children.length < 3)
     return alert("A questão de correlação deve ter no mínimo 3 associações.");
 
   alert("Questão validada e pronta para envio ao n8n.");
