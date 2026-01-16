@@ -34,7 +34,6 @@ body {
   margin: 0;
   font-size: 26px;
   font-weight: 700;
-  letter-spacing: .5px;
 }
 
 .header h2 {
@@ -141,15 +140,12 @@ footer {
 
 <body>
 
-<!-- CABEÇALHO -->
 <div class="header">
   <h1>Universidade Federal Fluminense</h1>
   <h2>Sistema Eletrônico de Registro de Questões</h2>
 </div>
 
-<!-- FORMULÁRIO -->
 <div class="container">
-
 <form id="questaoForm">
 
 <label>E-mail institucional</label>
@@ -174,22 +170,26 @@ placeholder="nome@id.uff.br">
 </select>
 
 <label>Imagens de apoio (opcional)</label>
-<input type="file" id="imagens" accept=".jpg,.png" multiple>
+<input type="file" accept=".jpg,.png" multiple>
 
 <!-- MÚLTIPLA ESCOLHA -->
 <div id="multipla" class="section" style="display:none">
   <label>Enunciado</label>
-  <textarea id="perguntaME" maxlength="1000"></textarea>
+  <textarea maxlength="1000"></textarea>
   <div id="alternativas"></div>
 </div>
 
 <!-- CORRELAÇÃO -->
 <div id="correlacao" class="section" style="display:none">
   <label>Enunciado</label>
-  <textarea id="perguntaCOR" maxlength="1000"></textarea>
+  <textarea maxlength="1000"></textarea>
   <div id="pares"></div>
   <button type="button" class="add" onclick="addPar()">+ Adicionar associação</button>
 </div>
+
+<!-- BIBLIOGRAFIA -->
+<label>Bibliografia</label>
+<textarea maxlength="500" placeholder="Informe a bibliografia de referência da questão (até 500 caracteres)"></textarea>
 
 <button type="submit" class="submit">Enviar questão</button>
 
@@ -262,7 +262,7 @@ function addPar() {
   paresDiv.appendChild(d);
 }
 
-questaoForm.onsubmit = async e => {
+questaoForm.onsubmit = e => {
   e.preventDefault();
 
   if (tipo.value === "multipla") {
