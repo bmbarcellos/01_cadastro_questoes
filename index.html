@@ -217,6 +217,25 @@ form.onsubmit = async e => {
     timestamp: new Date().toISOString()
   };
 
+  if (tipo.value === "multipla") {
+    payload.enunciado = enunciadoME.value;
+    payload.alternativas = [...document.querySelectorAll(".alternativa")].map(a => ({
+      texto: a.querySelector("input").value,
+      correta: a.dataset.correta === "true"
+    }));
+  }
+
+  if (tipo.value === "correlacao") {
+    payload.enunciado = enunciadoCOR.value;
+    payload.pares = [...document.querySelectorAll(".par")].map(p => {
+      const inputs = p.querySelectorAll("input");
+      return {
+        colunaA: inputs[0].value,
+        colunaB: inputs[1].value
+      };
+    });
+  }
+
   try {
     const r = await fetch(WEBHOOK_URL, {
       method: "POST",
