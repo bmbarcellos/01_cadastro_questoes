@@ -32,16 +32,6 @@ body {
   padding: 24px 16px;
 }
 
-.header h1 {
-  margin: 0;
-  font-size: 22px;
-}
-
-.header p {
-  margin-top: 8px;
-  font-size: 14px;
-}
-
 .container {
   max-width: 960px;
   margin: 24px auto;
@@ -71,9 +61,7 @@ input, select, textarea {
   font-size: 16px;
 }
 
-textarea {
-  min-height: 90px;
-}
+textarea { min-height: 90px; }
 
 .section {
   margin-top: 25px;
@@ -110,9 +98,7 @@ textarea {
   cursor: pointer;
 }
 
-.toggle button.active {
-  opacity: 1;
-}
+.toggle button.active { opacity: 1; }
 
 .btn-true { background: var(--true); }
 .btn-false { background: var(--false); }
@@ -131,15 +117,10 @@ button {
   border: none;
 }
 
-/* RESPONSIVO */
-@media (max-width: 768px) {
-  .container {
-    margin: 16px;
-    padding: 20px;
-  }
-  .par {
-    flex-direction: column;
-  }
+#resultado {
+  margin-top: 20px;
+  font-weight: bold;
+  color: var(--uff-blue);
 }
 </style>
 </head>
@@ -187,125 +168,118 @@ button {
 </select>
 
 <label>Assunto</label>
-<input id="assunto" type="text" maxlength="150">
-
-<label>Tipo de questão</label>
-<select id="tipo" required>
+<select id="assunto" required>
   <option value="">Selecione</option>
-  <option value="multipla">Múltipla escolha</option>
-  <option value="correlacao">Correlação</option>
+  <!-- TODAS as opções conforme solicitado -->
+  <option>Avaliação pré-anestésica</option>
+  <option>Anestesia geral</option>
+  <option>Bloqueios centrais</option>
+  <option>Monitorização</option>
+  <option>Reanimação cardiopulmonar</option>
+  <option>Reposição volêmica</option>
+  <option>Intubação orotraqueal e oxigenoterapia</option>
+  <option>Segurança do paciente</option>
+  <option>Gerenciamento da dor</option>
+  <option>Complicações em anestesia</option>
+  <option>Câncer de pele</option>
+  <option>Paraneoplasias</option>
+  <option>Farmacodermias</option>
+  <option>Leishmaniose</option>
+  <option>Buloses</option>
+  <option>Lesões pigmentadas</option>
+  <option>Micoses profundas</option>
+  <option>Sífilis</option>
+  <option>Anafilaxia</option>
+  <option>Urticária</option>
+  <option>Rinite alérgica</option>
+  <option>Asma grave</option>
+  <option>Alergia alimentar</option>
+  <option>Dermatite atópica</option>
+  <option>Erros inatos da imunidade</option>
+  <option>Reação adversa a droga</option>
+  <option>Incontinência urinária</option>
+  <option>PGM1</option><option>PGM2</option><option>PGM3</option>
+  <option>Disfunção sexual masculina</option>
+  <option>Transplante renal</option>
+  <option>HPB</option>
+  <option>Trauma urológico</option>
+  <option>Litíase urinária</option>
+  <option>Urgências urológicas</option>
+  <option>Hepatites virais</option>
+  <option>Doença ulcerosa péptica</option>
+  <option>Diarréia e parasitose</option>
+  <option>Cirrose hepática e complicações</option>
+  <option>Pancreatites</option>
+  <option>Intolerância e alergias alimentares</option>
+  <option>Doença inflamatória intestinal</option>
+  <option>Tumores esofagogástricos</option>
+  <option>CCR</option>
+  <option>Síndrome do Intestino Irritável e constipação intestinal</option>
+  <option>DRGE</option>
+  <option>Hemorragia digestiva</option>
+  <option>1º e 2º neurônios motores</option>
+  <option>Demência</option>
+  <option>Epilepsia</option>
+  <option>Doença de Parkinson e outros distúrbios do movimento</option>
+  <option>Cefaleias</option>
+  <option>Doença cerebrovascular</option>
+  <option>Coma e síncope</option>
+  <option>Neuropatias periféricas</option>
+  <option>Alterações fisiológicas do envelhecimento</option>
+  <option>Prescrição em idosos</option>
+  <option>Grandes síndromes geriátricas</option>
+  <option>Neurogeriatria</option>
+  <option>Princípios do equilíbrio ácido-base</option>
+  <option>Distúrbios ácido-base (acidoses)</option>
+  <option>Balanço do K / distúrbios do K</option>
+  <option>Hipercalcemia</option>
+  <option>Regulação osmolar volêmica, distúrbio do Na e água</option>
+  <option>Síndrome nefrótica</option>
+  <option>Glomerulonefrites e síndrome nefrítica</option>
+  <option>Rim na gestação</option>
+  <option>Nefrite túbulo-intersticial</option>
+  <option>Síndromes edemigênicas</option>
+  <option>Insuficiência renal aguda</option>
+  <option>Doença renal crônica</option>
+  <option>Anticonstipantes</option>
+  <option>Antidiarreicos</option>
+  <option>Antifiséticos, antieméticos, procinéticos</option>
+  <option>Farmacologia da doença ácido-péptica</option>
+  <option>Anti-histamínicos</option>
+  <option>Glicocorticóides</option>
+  <option>Anti-tussígenos e antigripais</option>
+  <option>Farmacologia da asma</option>
 </select>
 
-<div id="multipla" class="section" style="display:none">
-  <label>Enunciado</label>
-  <textarea id="enunciadoME"></textarea>
-  <div id="alternativas"></div>
-</div>
+<label>Comentário do gabarito (opcional)</label>
+<textarea id="comentario" maxlength="300"></textarea>
 
-<div id="correlacao" class="section" style="display:none">
-  <label>Enunciado</label>
-  <textarea id="enunciadoCOR"></textarea>
-  <div id="pares"></div>
-</div>
-
-<label>Bibliografia</label>
-<textarea id="bibliografia" maxlength="500"></textarea>
-
-<button class="submit" type="submit">Enviar questão</button>
+<button id="submitBtn" class="submit" type="submit">Enviar questão</button>
+<div id="resultado"></div>
 
 </form>
 </div>
 
 <script>
 const WEBHOOK_URL = "https://webhook.artideia.com.br/webhook/cadastro_questoes";
-
 const form = document.getElementById("questaoForm");
-const tipo = document.getElementById("tipo");
-const multipla = document.getElementById("multipla");
-const correlacao = document.getElementById("correlacao");
-const altDiv = document.getElementById("alternativas");
-const paresDiv = document.getElementById("pares");
-
-tipo.onchange = () => {
-  multipla.style.display = "none";
-  correlacao.style.display = "none";
-  altDiv.innerHTML = "";
-  paresDiv.innerHTML = "";
-
-  if (tipo.value === "multipla") {
-    multipla.style.display = "block";
-    for (let i = 0; i < 5; i++) addAlternativa();
-  }
-
-  if (tipo.value === "correlacao") {
-    correlacao.style.display = "block";
-    for (let i = 0; i < 3; i++) addPar();
-  }
-};
-
-function addAlternativa() {
-  const d = document.createElement("div");
-  d.className = "alternativa";
-  d.dataset.correta = "false";
-  d.innerHTML = `
-    <input placeholder="Alternativa">
-    <div class="toggle">
-      <button type="button" class="btn-true">Verdadeira</button>
-      <button type="button" class="btn-false active">Falsa</button>
-    </div>`;
-  const [v,f] = d.querySelectorAll("button");
-  v.onclick = () => {
-    document.querySelectorAll(".alternativa").forEach(a => a.dataset.correta="false");
-    v.classList.add("active"); f.classList.remove("active");
-    d.dataset.correta="true";
-  };
-  f.onclick = () => {
-    f.classList.add("active"); v.classList.remove("active");
-    d.dataset.correta="false";
-  };
-  altDiv.appendChild(d);
-}
-
-function addPar() {
-  const d = document.createElement("div");
-  d.className = "par";
-  d.innerHTML = `
-    <input placeholder="Coluna A">
-    <input placeholder="Coluna B">`;
-  paresDiv.appendChild(d);
-}
+const submitBtn = document.getElementById("submitBtn");
+const resultado = document.getElementById("resultado");
 
 form.onsubmit = async e => {
   e.preventDefault();
+  submitBtn.disabled = true;
+
+  const timestamp = new Date().toISOString();
 
   const payload = {
     email: email.value,
     dificuldade: dificuldade.value,
     modulo: modulo.value,
     assunto: assunto.value,
-    tipo: tipo.value,
-    bibliografia: bibliografia.value,
-    timestamp: new Date().toISOString()
+    comentario_gabarito: comentario.value,
+    timestamp
   };
-
-  if (tipo.value === "multipla") {
-    payload.enunciado = enunciadoME.value;
-    payload.alternativas = [...document.querySelectorAll(".alternativa")].map(a => ({
-      texto: a.querySelector("input").value,
-      correta: a.dataset.correta === "true"
-    }));
-  }
-
-  if (tipo.value === "correlacao") {
-    payload.enunciado = enunciadoCOR.value;
-    payload.pares = [...document.querySelectorAll(".par")].map(p => {
-      const inputs = p.querySelectorAll("input");
-      return {
-        colunaA: inputs[0].value,
-        colunaB: inputs[1].value
-      };
-    });
-  }
 
   try {
     const r = await fetch(WEBHOOK_URL, {
@@ -313,11 +287,16 @@ form.onsubmit = async e => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
+
     if (!r.ok) throw new Error();
-    alert("Questão enviada com sucesso!");
+
+    resultado.innerText = `Questão registrada com sucesso. ID da questão: ${timestamp}`;
     form.reset();
-  } catch (err) {
+
+  } catch {
     alert("Erro ao enviar a questão.");
+  } finally {
+    submitBtn.disabled = false;
   }
 };
 </script>
