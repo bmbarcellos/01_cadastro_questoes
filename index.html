@@ -3,124 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Cadastro de Questões – UFF</title>
 
 <style>
-:root {
-  --uff-blue: #003A8F;
-  --uff-light: #E6EEF8;
-  --bg: #F5F7FA;
-  --text: #1F2933;
-  --true: #0F9D58;
-  --false: #DB4437;
-}
-
-* { box-sizing: border-box; }
-
 body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
   margin: 0;
-  font-family: Inter, Roboto, Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
 }
-
 .header {
-  background: var(--uff-blue);
+  background: #003A8F;
   color: #fff;
+  padding: 20px;
   text-align: center;
-  padding: 24px 16px;
 }
-
 .container {
-  max-width: 960px;
-  margin: 24px auto;
+  max-width: 900px;
+  margin: 20px auto;
   background: #fff;
-  padding: 32px;
+  padding: 30px;
   border-radius: 8px;
 }
-
 label {
-  font-weight: 600;
+  font-weight: bold;
   display: block;
-  margin-top: 18px;
+  margin-top: 16px;
 }
-
-small {
-  color: var(--false);
-  display: block;
-  margin-top: 4px;
-}
-
 input, select, textarea {
   width: 100%;
-  padding: 12px;
-  margin-top: 6px;
-  border-radius: 6px;
-  border: 1px solid #D1D5DB;
-  font-size: 16px;
-}
-
-textarea { min-height: 90px; }
-
-.section {
-  margin-top: 25px;
-  padding: 20px;
-  background: var(--uff-light);
-  border-radius: 8px;
-}
-
-.alternativa, .par {
-  background: #fff;
-  padding: 12px;
-  border-radius: 6px;
-  margin-top: 12px;
-}
-
-.par {
-  display: flex;
-  gap: 10px;
-}
-
-.toggle {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.toggle button {
-  flex: 1;
-  border: none;
   padding: 10px;
-  border-radius: 6px;
-  color: #fff;
-  opacity: .5;
-  cursor: pointer;
+  margin-top: 6px;
 }
-
-.toggle button.active { opacity: 1; }
-
-.btn-true { background: var(--true); }
-.btn-false { background: var(--false); }
-
+textarea { min-height: 90px; }
 button {
   margin-top: 24px;
   padding: 14px;
   width: 100%;
-  border-radius: 8px;
-  font-size: 16px;
-}
-
-.submit {
-  background: var(--uff-blue);
+  background: #003A8F;
   color: #fff;
   border: none;
+  font-size: 16px;
 }
-
 #resultado {
   margin-top: 20px;
   font-weight: bold;
-  color: var(--uff-blue);
 }
 </style>
 </head>
@@ -128,8 +54,8 @@ button {
 <body>
 
 <div class="header">
-  <h1>Universidade Federal Fluminense</h1>
-  <p>Sistema Eletrônico de Registro de Questões</p>
+  <h2>Universidade Federal Fluminense</h2>
+  <p>Cadastro de Questões para Banco Institucional</p>
 </div>
 
 <div class="container">
@@ -137,22 +63,22 @@ button {
 
 <label>E-mail institucional</label>
 <input id="email" type="email" required pattern="^[^@]+@id\.uff\.br$">
-<small>Obrigatório e-mail @id.uff.br</small>
 
-<label>Grau de dificuldade</label>
-<select id="dificuldade" required>
+<label>Tipo de questão</label>
+<select id="tipo" required>
   <option value="">Selecione</option>
-  <option>Fácil</option>
-  <option>Médio</option>
-  <option>Difícil</option>
+  <option value="objetiva">Objetiva (múltipla escolha)</option>
+  <option value="associacao">Associação / correlação</option>
 </select>
+
+<label>Enunciado da questão</label>
+<textarea id="enunciado" required></textarea>
 
 <label>Módulo</label>
 <select id="modulo" required>
   <option value="">Selecione</option>
   <option>Anestesiologia</option>
   <option>Dermatologia</option>
-  <option>Equilíbrio Hidroeletrolítico</option>
   <option>Farmacologia</option>
   <option>Gastroenterologia</option>
   <option>Geriatria</option>
@@ -162,106 +88,109 @@ button {
   <option>Neonatologia</option>
   <option>Neurologia</option>
   <option>Obstetrícia</option>
-  <option>Pneumologia</option>
-  <option>Urologia</option>
   <option>Psiquiatria infantil</option>
+  <option>Urologia</option>
 </select>
 
 <label>Assunto</label>
-<select id="assunto" required>
-  <option value="">Selecione</option>
-  <!-- TODAS as opções conforme solicitado -->
-  <option>Avaliação pré-anestésica</option>
-  <option>Anestesia geral</option>
-  <option>Bloqueios centrais</option>
-  <option>Monitorização</option>
-  <option>Reanimação cardiopulmonar</option>
-  <option>Reposição volêmica</option>
-  <option>Intubação orotraqueal e oxigenoterapia</option>
-  <option>Segurança do paciente</option>
-  <option>Gerenciamento da dor</option>
-  <option>Complicações em anestesia</option>
-  <option>Câncer de pele</option>
-  <option>Paraneoplasias</option>
-  <option>Farmacodermias</option>
-  <option>Leishmaniose</option>
-  <option>Buloses</option>
-  <option>Lesões pigmentadas</option>
-  <option>Micoses profundas</option>
-  <option>Sífilis</option>
-  <option>Anafilaxia</option>
-  <option>Urticária</option>
-  <option>Rinite alérgica</option>
-  <option>Asma grave</option>
-  <option>Alergia alimentar</option>
-  <option>Dermatite atópica</option>
-  <option>Erros inatos da imunidade</option>
-  <option>Reação adversa a droga</option>
-  <option>Incontinência urinária</option>
-  <option>PGM1</option><option>PGM2</option><option>PGM3</option>
-  <option>Disfunção sexual masculina</option>
-  <option>Transplante renal</option>
-  <option>HPB</option>
-  <option>Trauma urológico</option>
-  <option>Litíase urinária</option>
-  <option>Urgências urológicas</option>
-  <option>Hepatites virais</option>
-  <option>Doença ulcerosa péptica</option>
-  <option>Diarréia e parasitose</option>
-  <option>Cirrose hepática e complicações</option>
-  <option>Pancreatites</option>
-  <option>Intolerância e alergias alimentares</option>
-  <option>Doença inflamatória intestinal</option>
-  <option>Tumores esofagogástricos</option>
-  <option>CCR</option>
-  <option>Síndrome do Intestino Irritável e constipação intestinal</option>
-  <option>DRGE</option>
-  <option>Hemorragia digestiva</option>
-  <option>1º e 2º neurônios motores</option>
-  <option>Demência</option>
-  <option>Epilepsia</option>
-  <option>Doença de Parkinson e outros distúrbios do movimento</option>
-  <option>Cefaleias</option>
-  <option>Doença cerebrovascular</option>
-  <option>Coma e síncope</option>
-  <option>Neuropatias periféricas</option>
-  <option>Alterações fisiológicas do envelhecimento</option>
-  <option>Prescrição em idosos</option>
-  <option>Grandes síndromes geriátricas</option>
-  <option>Neurogeriatria</option>
-  <option>Princípios do equilíbrio ácido-base</option>
-  <option>Distúrbios ácido-base (acidoses)</option>
-  <option>Balanço do K / distúrbios do K</option>
-  <option>Hipercalcemia</option>
-  <option>Regulação osmolar volêmica, distúrbio do Na e água</option>
-  <option>Síndrome nefrótica</option>
-  <option>Glomerulonefrites e síndrome nefrítica</option>
-  <option>Rim na gestação</option>
-  <option>Nefrite túbulo-intersticial</option>
-  <option>Síndromes edemigênicas</option>
-  <option>Insuficiência renal aguda</option>
-  <option>Doença renal crônica</option>
-  <option>Anticonstipantes</option>
-  <option>Antidiarreicos</option>
-  <option>Antifiséticos, antieméticos, procinéticos</option>
-  <option>Farmacologia da doença ácido-péptica</option>
-  <option>Anti-histamínicos</option>
-  <option>Glicocorticóides</option>
-  <option>Anti-tussígenos e antigripais</option>
-  <option>Farmacologia da asma</option>
+<select id="assunto" required disabled>
+  <option value="">Selecione um módulo primeiro</option>
 </select>
 
 <label>Comentário do gabarito (opcional)</label>
 <textarea id="comentario" maxlength="300"></textarea>
 
-<button id="submitBtn" class="submit" type="submit">Enviar questão</button>
+<button id="submitBtn" type="submit">Enviar questão</button>
 <div id="resultado"></div>
 
 </form>
 </div>
 
 <script>
-const WEBHOOK_URL = "https://webhook.artideia.com.br/webhook/cadastro_questoes";
+const assuntosPorModulo = {
+  "Anestesiologia": [
+    "Avaliação pré-anestésica","Anestesia geral","Bloqueios centrais",
+    "Monitorização","Reanimação cardiopulmonar","Reposição volêmica",
+    "Intubação orotraqueal e oxigenoterapia","Segurança do paciente",
+    "Gerenciamento da dor","Complicações em anestesia"
+  ],
+  "Dermatologia": [
+    "Câncer de pele","Paraneoplasias","Farmacodermias","Leishmaniose",
+    "Buloses","Lesões pigmentadas","Micoses profundas","Sífilis"
+  ],
+  "Farmacologia": [
+    "Anticonstipantes","Antidiarreicos",
+    "Antifiséticos, antieméticos, procinéticos",
+    "Farmacologia da doença ácido-péptica",
+    "Anti-histamínicos","Glicocorticóides",
+    "Anti-tussígenos e antigripais","Farmacologia da asma"
+  ],
+  "Gastroenterologia": [
+    "Hepatites virais","Doença ulcerosa péptica","Diarréia e parasitose",
+    "Cirrose hepática e complicações","Pancreatites",
+    "Intolerância e alergias alimentares",
+    "Doença inflamatória intestinal","Tumores esofagogástricos",
+    "CCR","Síndrome do Intestino Irritável e constipação intestinal",
+    "DRGE","Hemorragia digestiva"
+  ],
+  "Geriatria": [
+    "Alterações fisiológicas do envelhecimento",
+    "Prescrição em idosos",
+    "Grandes síndromes geriátricas",
+    "Neurogeriatria"
+  ],
+  "Imunologia": [
+    "Anafilaxia","Urticária","Rinite alérgica","Asma grave",
+    "Alergia alimentar","Dermatite atópica",
+    "Erros inatos da imunidade","Reação adversa a droga"
+  ],
+  "Nefrologia": [
+    "Princípios do equilíbrio ácido-base",
+    "Distúrbios ácido-base (acidoses)",
+    "Balanço do K / distúrbios do K",
+    "Hipercalcemia",
+    "Regulação osmolar volêmica, distúrbio do Na e água",
+    "Síndrome nefrótica","Glomerulonefrites e síndrome nefrítica",
+    "Rim na gestação","Nefrite túbulo-intersticial",
+    "Síndromes edemigênicas","Insuficiência renal aguda",
+    "Doença renal crônica","Transplante renal"
+  ],
+  "Neurologia": [
+    "1º e 2º neurônios motores","Demência","Epilepsia",
+    "Doença de Parkinson e outros distúrbios do movimento",
+    "Cefaleias","Doença cerebrovascular",
+    "Coma e síncope","Neuropatias periféricas"
+  ],
+  "Urologia": [
+    "Incontinência urinária","PGM1","PGM2","PGM3",
+    "Disfunção sexual masculina","Transplante renal",
+    "HPB","Trauma urológico","Litíase urinária",
+    "Urgências urológicas"
+  ]
+};
+
+const moduloSelect = document.getElementById("modulo");
+const assuntoSelect = document.getElementById("assunto");
+
+moduloSelect.onchange = () => {
+  assuntoSelect.innerHTML = "";
+  const assuntos = assuntosPorModulo[moduloSelect.value];
+
+  if (!assuntos) {
+    assuntoSelect.disabled = true;
+    assuntoSelect.innerHTML = "<option>Sem assuntos cadastrados</option>";
+    return;
+  }
+
+  assuntoSelect.disabled = false;
+  assuntoSelect.innerHTML = "<option value=''>Selecione</option>";
+  assuntos.forEach(a => {
+    const opt = document.createElement("option");
+    opt.textContent = a;
+    assuntoSelect.appendChild(opt);
+  });
+};
+
 const form = document.getElementById("questaoForm");
 const submitBtn = document.getElementById("submitBtn");
 const resultado = document.getElementById("resultado");
@@ -270,29 +199,29 @@ form.onsubmit = async e => {
   e.preventDefault();
   submitBtn.disabled = true;
 
-  const timestamp = new Date().toISOString();
+  const idQuestao = new Date().toISOString();
 
   const payload = {
+    id_questao: idQuestao,
     email: email.value,
-    dificuldade: dificuldade.value,
+    tipo: tipo.value,
+    enunciado: enunciado.value,
     modulo: modulo.value,
     assunto: assunto.value,
-    comentario_gabarito: comentario.value,
-    timestamp
+    comentario_gabarito: comentario.value
   };
 
   try {
-    const r = await fetch(WEBHOOK_URL, {
+    const r = await fetch("https://webhook.artideia.com.br/webhook/cadastro_questoes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
     if (!r.ok) throw new Error();
-
-    resultado.innerText = `Questão registrada com sucesso. ID da questão: ${timestamp}`;
+    resultado.innerText = "Questão registrada com sucesso. ID: " + idQuestao;
     form.reset();
-
+    assuntoSelect.disabled = true;
   } catch {
     alert("Erro ao enviar a questão.");
   } finally {
