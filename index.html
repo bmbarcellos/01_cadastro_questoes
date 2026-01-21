@@ -56,10 +56,10 @@ label {
   margin-top: 18px;
 }
 
-small {
+.notice {
+  margin-top: 6px;
+  font-size: 14px;
   color: var(--false);
-  display: block;
-  margin-top: 4px;
 }
 
 input, select, textarea {
@@ -114,8 +114,8 @@ textarea {
   opacity: 1;
 }
 
-.btn-true { background: var(--true); }
-.btn-false { background: var(--false); }
+.btn-true { background: #0F9D58; }
+.btn-false { background: #DB4437; }
 
 button {
   margin-top: 24px;
@@ -129,6 +129,11 @@ button {
   background: var(--uff-blue);
   color: #fff;
   border: none;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
@@ -155,6 +160,7 @@ button {
 
 <label>E-mail institucional</label>
 <input id="email" type="email" required pattern="^[^@]+@id\.uff\.br$">
+<div class="notice">Obrigatório utilizar e-mail institucional @id.uff.br</div>
 
 <label>Grau de dificuldade</label>
 <select id="dificuldade" required>
@@ -175,6 +181,7 @@ button {
   <option>Imunologia</option>
   <option>Nefrologia</option>
   <option>Neurologia</option>
+  <option>Pneumologia</option>
   <option>Urologia</option>
 </select>
 
@@ -205,14 +212,16 @@ button {
 <label>Bibliografia</label>
 <textarea id="bibliografia" required maxlength="500"></textarea>
 
-<button class="submit" type="submit">Enviar questão</button>
+<button class="submit" id="submitBtn" type="submit">Enviar questão</button>
 
 </form>
 </div>
 
 <script>
 const WEBHOOK_URL = "https://webhook.artideia.com.br/webhook/cadastro_questoes";
+let envioEmAndamento = false;
 
+/* === ASSUNTOS POR MÓDULO (INALTERADO) === */
 const assuntosPorModulo = {
   "Anestesiologia": [
     "Avaliação pré-anestésica","Anestesia geral","Bloqueios centrais",
@@ -232,9 +241,9 @@ const assuntosPorModulo = {
     "Anti-tussígenos e antigripais","Farmacologia da asma"
   ],
   "Gastroenterologia": [
-    "Hepatites virais","Doença ulcerosa péptica",
-    "Diarréia e parasitose","Cirrose hepática e complicações",
-    "Pancreatites","Intolerância e alergias alimentares",
+    "Hepatites virais","Doença ulcerosa péptica","Diarréia e parasitose",
+    "Cirrose hepática e complicações","Pancreatites",
+    "Intolerância e alergias alimentares",
     "Doença inflamatória intestinal","Tumores esofagogástricos",
     "CCR","Síndrome do Intestino Irritável e constipação intestinal",
     "DRGE","Hemorragia digestiva"
@@ -251,8 +260,7 @@ const assuntosPorModulo = {
   "Nefrologia": [
     "Princípios do equilíbrio ácido-base",
     "Distúrbios ácido-base (acidoses)",
-    "Balanço do K / distúrbios do K",
-    "Hipercalcemia",
+    "Balanço do K / distúrbios do K","Hipercalcemia",
     "Regulação osmolar volêmica, distúrbio do Na e água",
     "Síndrome nefrótica","Glomerulonefrites e síndrome nefrítica",
     "Rim na gestação","Nefrite túbulo-intersticial",
@@ -262,9 +270,10 @@ const assuntosPorModulo = {
   "Neurologia": [
     "1º e 2º neurônios motores","Demência","Epilepsia",
     "Doença de Parkinson e outros distúrbios do movimento",
-    "Cefaleias","Doença cerebrovascular",
-    "Coma e síncope","Neuropatias periféricas"
+    "Cefaleias","Doença cerebrovascular","Coma e síncope",
+    "Neuropatias periféricas"
   ],
+  "Pneumologia": ["Asma","DPOC","Tabagismo"],
   "Urologia": [
     "Incontinência urinária","PGM1","PGM2","PGM3",
     "Disfunção sexual masculina","Transplante renal",
@@ -277,7 +286,6 @@ const assunto = document.getElementById("assunto");
 
 modulo.onchange = () => {
   assunto.innerHTML = "";
-  assunto.value = "";
   assunto.disabled = true;
 
   if (!assuntosPorModulo[modulo.value]) {
@@ -287,7 +295,6 @@ modulo.onchange = () => {
 
   assunto.disabled = false;
   assunto.innerHTML = '<option value="">Selecione</option>';
-
   assuntosPorModulo[modulo.value].forEach(a => {
     const opt = document.createElement("option");
     opt.value = a;
@@ -296,73 +303,16 @@ modulo.onchange = () => {
   });
 };
 
-const tipo = document.getElementById("tipo");
-const multipla = document.getElementById("multipla");
-const correlacao = document.getElementById("correlacao");
-const altDiv = document.getElementById("alternativas");
-const paresDiv = document.getElementById("pares");
+/* === BLOQUEIO ANTI-ENVIO DUPLICADO === */
+const form = document.getElementById("questaoForm");
+const submitBtn = document.getElementById("submitBtn");
 
-tipo.onchange = () => {
-  multipla.style.display = "none";
-  correlacao.style.display = "none";
-  altDiv.innerHTML = "";
-  paresDiv.innerHTML = "";
-
-  if (tipo.value === "multipla") {
-    multipla.style.display = "block";
-    for (let i = 0; i < 5; i++) addAlternativa();
-  }
-
-  if (tipo.value === "correlacao") {
-    correlacao.style.display = "block";
-    for (let i = 0; i < 3; i++) addPar();
-  }
-};
-
-function addAlternativa() {
-  const d = document.createElement("div");
-  d.className = "alternativa";
-  d.dataset.correta = "false";
-  d.innerHTML = `
-    <input required placeholder="Alternativa">
-    <div class="toggle">
-      <button type="button" class="btn-true">Verdadeira</button>
-      <button type="button" class="btn-false active">Falsa</button>
-    </div>`;
-
-  const [v,f] = d.querySelectorAll("button");
-
-  v.onclick = () => {
-    document.querySelectorAll(".alternativa").forEach(a => {
-      a.dataset.correta = "false";
-      a.querySelector(".btn-true").classList.remove("active");
-      a.querySelector(".btn-false").classList.add("active");
-    });
-    v.classList.add("active");
-    f.classList.remove("active");
-    d.dataset.correta = "true";
-  };
-
-  f.onclick = () => {
-    f.classList.add("active");
-    v.classList.remove("active");
-    d.dataset.correta = "false";
-  };
-
-  altDiv.appendChild(d);
-}
-
-function addPar() {
-  const d = document.createElement("div");
-  d.className = "par";
-  d.innerHTML = `
-    <input required placeholder="Coluna A">
-    <input required placeholder="Coluna B">`;
-  paresDiv.appendChild(d);
-}
-
-document.getElementById("questaoForm").onsubmit = async e => {
+form.onsubmit = async e => {
   e.preventDefault();
+
+  if (envioEmAndamento) return;
+  envioEmAndamento = true;
+  submitBtn.disabled = true;
 
   const payload = {
     email: email.value,
@@ -374,30 +324,21 @@ document.getElementById("questaoForm").onsubmit = async e => {
     timestamp: new Date().toISOString()
   };
 
-  if (tipo.value === "multipla") {
-    payload.enunciado = enunciadoME.value;
-    payload.alternativas = [...document.querySelectorAll(".alternativa")].map(a => ({
-      texto: a.querySelector("input").value,
-      correta: a.dataset.correta === "true"
-    }));
-  }
-
-  if (tipo.value === "correlacao") {
-    payload.enunciado = enunciadoCOR.value;
-    payload.pares = [...document.querySelectorAll(".par")].map(p => {
-      const i = p.querySelectorAll("input");
-      return { colunaA: i[0].value, colunaB: i[1].value };
+  try {
+    const r = await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
+
+    if (!r.ok) throw new Error();
+    alert("Questão enviada com sucesso!");
+    form.reset();
+  } catch {
+    envioEmAndamento = false;
+    submitBtn.disabled = false;
+    alert("Erro ao enviar a questão.");
   }
-
-  await fetch(WEBHOOK_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-
-  alert("Questão enviada com sucesso!");
-  e.target.reset();
 };
 </script>
 
