@@ -302,16 +302,7 @@ function addPar() {
   pares.appendChild(d);
 }
 
-/* ========= IMAGEM BASE64 ========= */
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.split(",")[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
+/* ========= IMAGEM PREVIEW ========= */
 imagemME.onchange = () => {
   previewME.src = URL.createObjectURL(imagemME.files[0]);
   previewME.style.display = "block";
@@ -322,6 +313,7 @@ imagemCOR.onchange = () => {
   previewCOR.style.display = "block";
 };
 
+/* ========= ENVIO DO FORMULÁRIO ========= */
 questaoForm.onsubmit = async e => {
   e.preventDefault();
   if (envioEmAndamento) return;
@@ -337,7 +329,7 @@ questaoForm.onsubmit = async e => {
     return;
   }
 
-  // validação de múltipla escolha: pelo menos 1 alternativa correta
+  // validação de múltipla escolha: 1 alternativa correta
   if (tipo.value === "multipla") {
     const corretas = [...document.querySelectorAll(".alternativa")].filter(a => a.dataset.correta === "true");
     if (corretas.length !== 1) {
@@ -378,18 +370,33 @@ questaoForm.onsubmit = async e => {
     imagemFile = imagemCOR.files[0];
   }
 
-  if (imagemFile) {
-    payload.imagem_base64 = await fileToBase64(imagemFile);
-    payload.imagem_nome = imagemFile.name;
-    payload.imagem_tipo = imagemFile.type;
-  }
-
   try {
+    let body;
+    let headers = {};
+
+    if (imagemFile) {
+      // Envia como FormData com imagem binária
+      body = new FormData();
+      for (const key in payload) {
+        if (typeof payload[key] === "object") {
+          body.append(key, JSON.stringify(payload[key]));
+        } else {
+          body.append(key, payload[key]);
+        }
+      }
+      body.append("imagem", imagemFile);
+    } else {
+      // Envia JSON normalmente
+      body = JSON.stringify(payload);
+      headers["Content-Type"] = "application/json";
+    }
+
     const r = await fetch(WEBHOOK_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      headers,
+      body
     });
+
     if (!r.ok) throw new Error();
     alert("Questão enviada com sucesso!");
     questaoForm.reset();
