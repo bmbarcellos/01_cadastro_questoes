@@ -172,7 +172,12 @@ textarea { min-height: 90px; }
 <div id="correlacao" class="section" style="display:none">
   <label>Enunciado</label>
   <textarea id="enunciadoCOR"></textarea>
+
   <div id="pares"></div>
+
+  <button type="button" id="addParBtn" class="submit" style="margin-top:16px">
+    + Adicionar par de associação
+  </button>
 </div>
 
 <label>Bibliografia</label>
@@ -281,6 +286,11 @@ function addPar() {
     <input required placeholder="Coluna B">`;
   pares.appendChild(d);
 }
+
+const addParBtn = document.getElementById("addParBtn");
+addParBtn.onclick = () => {
+  addPar();
+};
 
 questaoForm.onsubmit = async e => {
   e.preventDefault();
