@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
 <title>Cadastro de Questões</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #f5f5f5;
+  background: #f4f4f4;
   padding: 20px;
 }
 
@@ -16,14 +16,14 @@ body {
   max-width: 900px;
   background: #fff;
   padding: 20px;
-  margin: auto;
   border-radius: 8px;
+  margin: auto;
 }
 
 label {
   font-weight: bold;
-  margin-top: 15px;
   display: block;
+  margin-top: 15px;
 }
 
 select, textarea, input[type="text"] {
@@ -36,41 +36,31 @@ textarea {
   resize: vertical;
 }
 
-button {
-  margin-top: 20px;
-  padding: 10px 16px;
-  cursor: pointer;
-}
-
 .alternativa {
   display: flex;
   gap: 10px;
   margin-top: 8px;
 }
 
-/* ================= PREVIEW ================= */
+button {
+  margin-top: 20px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+/* ===== PREVIEW (não interfere no layout) ===== */
 #previewContainer {
   display: none;
   margin-top: 30px;
   padding: 20px;
-  border: 2px dashed #999;
+  border: 1px dashed #999;
   background: #fafafa;
-}
-
-#previewContainer h3 {
-  margin-top: 0;
-}
-
-.preview-alternativa {
-  margin: 6px 0;
 }
 
 #previewImagem {
   max-width: 100%;
-  margin-top: 15px;
-  border-radius: 6px;
+  margin-top: 10px;
 }
-/* =========================================== */
 </style>
 </head>
 
@@ -95,93 +85,114 @@ button {
 <label>Enunciado</label>
 <textarea id="enunciado" rows="4"></textarea>
 
-<!-- ALTERNATIVAS -->
 <div id="alternativasContainer"></div>
 
-<!-- IMAGEM -->
 <label>Imagem da questão (opcional)</label>
 <input type="file" id="imagemQuestao" accept="image/*">
 
 <label>Bibliografia</label>
 <textarea id="bibliografia" rows="3"></textarea>
 
-<!-- BOTÃO PREVIEW -->
 <button type="button" onclick="renderPreview()">Pré-visualizar questão</button>
 
-<!-- ================= PREVIEW ================= -->
 <div id="previewContainer">
-  <h3>Pré-visualização da questão</h3>
-
-  <p><strong>Módulo:</strong> <span id="previewModulo"></span></p>
-  <p><strong>Assunto:</strong> <span id="previewAssunto"></span></p>
-
+  <h3>Pré-visualização</h3>
+  <p><strong>Módulo:</strong> <span id="pModulo"></span></p>
+  <p><strong>Assunto:</strong> <span id="pAssunto"></span></p>
   <p><strong>Enunciado:</strong></p>
-  <p id="previewEnunciado"></p>
-
-  <div id="previewAlternativas"></div>
-
-  <img id="previewImagem" />
-
+  <p id="pEnunciado"></p>
+  <div id="pAlternativas"></div>
+  <img id="previewImagem">
   <p><strong>Bibliografia:</strong></p>
-  <p id="previewBibliografia"></p>
+  <p id="pBibliografia"></p>
 </div>
-<!-- =========================================== -->
 
 <button type="submit">Enviar</button>
 
 </div>
 
 <script>
-// ================== DADOS ==================
+// ===== MÓDULOS E ASSUNTOS (INTEGRAIS) =====
 const relacaoModuloAssunto = {
   "Anestesiologia": [
-    "Avaliação pré-anestésica",
-    "Anestesia geral",
-    "Bloqueios centrais",
-    "Monitorização",
-    "Reanimação cardiopulmonar",
-    "Reposição volêmica",
-    "Intubação orotraqueal e oxigenoterapia",
-    "Segurança do paciente",
-    "Gerenciamento da dor",
-    "Complicações em anestesia"
+    "Avaliação pré-anestésica","Anestesia geral","Bloqueios centrais","Monitorização",
+    "Reanimação cardiopulmonar","Reposição volêmica",
+    "Intubação orotraqueal e oxigenoterapia","Segurança do paciente",
+    "Gerenciamento da dor","Complicações em anestesia"
   ],
   "Dermatologia": [
-    "Câncer de pele",
-    "Paraneoplasias",
-    "Farmacodermias",
-    "Leishmaniose",
-    "Buloses",
-    "Lesões pigmentadas",
-    "Micoses profundas",
-    "Sífilis"
+    "Câncer de pele","Paraneoplasias","Farmacodermias","Leishmaniose",
+    "Buloses","Lesões pigmentadas","Micoses profundas","Sífilis"
+  ],
+  "Farmacologia": [
+    "Anticonstipantes","Antidiarreicos",
+    "Antifiséticos, antieméticos, procinéticos",
+    "Farmacologia da doença ácido-péptica",
+    "Anti-histamínicos","Glicocorticóides",
+    "Anti-tussígenos e antigripais","Farmacologia da asma"
+  ],
+  "Gastroenterologia": [
+    "Hepatites virais","Doença ulcerosa péptica","Diarréia e parasitose",
+    "Cirrose hepática e complicações","Pancreatites",
+    "Intolerância e alergias alimentares","Doença inflamatória intestinal",
+    "Tumores esofagogástricos","CCR",
+    "Síndrome do Intestino Irritável e constipação intestinal",
+    "DRGE","Hemorragia digestiva"
+  ],
+  "Geriatria": [
+    "Alterações fisiológicas do envelhecimento",
+    "Prescrição em idosos",
+    "Grandes síndromes geriátricas",
+    "Neurogeriatria"
+  ],
+  "Imunologia": [
+    "Anafilaxia","Urticária","Rinite alérgica","Asma grave",
+    "Alergia alimentar","Dermatite atópica",
+    "Erros inatos da imunidade","Reação adversa a droga"
+  ],
+  "Nefrologia": [
+    "Princípios do equilíbrio ácido-base","Distúrbios ácido-base (acidoses)",
+    "Balanço do K / distúrbios do K","Hipercalcemia",
+    "Regulação osmolar volêmica, distúrbio do Na e água",
+    "Síndrome nefrótica","Glomerulonefrites e síndrome nefrítica",
+    "Rim na gestação","Nefrite túbulo-intersticial",
+    "Síndromes edemigênicas","Insuficiência renal aguda",
+    "Doença renal crônica","Transplante renal"
+  ],
+  "Neurologia": [
+    "1º e 2º neurônios motores","Demência","Epilepsia",
+    "Doença de Parkinson e outros distúrbios do movimento",
+    "Cefaleias","Doença cerebrovascular",
+    "Coma e síncope","Neuropatias periféricas"
+  ],
+  "Urologia": [
+    "Incontinência urinária","PGM","Disfunção sexual masculina",
+    "Transplante renal","HPB","Trauma urológico",
+    "Litíase urinária","Urgências urológicas"
   ]
-  // (demais módulos continuam iguais)
 };
 
-// ================== MÓDULO / ASSUNTO ==================
-const moduloSelect = document.getElementById("modulo");
-const assuntoSelect = document.getElementById("assunto");
+// ===== POPULAR MÓDULO / ASSUNTO =====
+const modulo = document.getElementById("modulo");
+const assunto = document.getElementById("assunto");
 
-moduloSelect.innerHTML = '<option value="">Selecione</option>';
+modulo.innerHTML = '<option value="">Selecione</option>';
 Object.keys(relacaoModuloAssunto).forEach(m => {
-  const opt = document.createElement("option");
-  opt.value = m;
-  opt.textContent = m;
-  moduloSelect.appendChild(opt);
+  const o = document.createElement("option");
+  o.value = m; o.textContent = m;
+  modulo.appendChild(o);
 });
 
-moduloSelect.addEventListener("change", () => {
-  assuntoSelect.innerHTML = '<option value="">Selecione</option>';
-  (relacaoModuloAssunto[moduloSelect.value] || []).forEach(a => {
-    const opt = document.createElement("option");
-    opt.value = a;
-    opt.textContent = a;
-    assuntoSelect.appendChild(opt);
+modulo.addEventListener("change", () => {
+  assunto.innerHTML = '<option value="">Selecione</option>';
+  (relacaoModuloAssunto[modulo.value] || []).forEach(a => {
+    const o = document.createElement("option");
+    o.value = a; o.textContent = a;
+    assunto.appendChild(o);
   });
 });
 
-// ================== TIPO QUESTÃO ==================
+// ===== TIPO DE QUESTÃO =====
 const tipoQuestao = document.getElementById("tipoQuestao");
 const alternativasContainer = document.getElementById("alternativasContainer");
 
@@ -194,8 +205,7 @@ tipoQuestao.addEventListener("change", () => {
         <div class="alternativa">
           <input type="radio" name="correta">
           <input type="text" placeholder="Alternativa ${String.fromCharCode(65+i)}">
-        </div>
-      `;
+        </div>`;
     }
   }
 
@@ -205,45 +215,36 @@ tipoQuestao.addEventListener("change", () => {
         <div class="alternativa">
           <input type="text" placeholder="Coluna A">
           <input type="text" placeholder="Coluna B">
-        </div>
-      `;
+        </div>`;
     }
   }
 });
 
-// ================== BASE64 ==================
+// ===== IMAGEM BASE64 =====
 let imagemBase64 = "";
-
 document.getElementById("imagemQuestao").addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => imagemBase64 = reader.result;
-  reader.readAsDataURL(file);
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => imagemBase64 = r.result;
+  r.readAsDataURL(f);
 });
 
-// ================== PREVIEW ==================
+// ===== PREVIEW =====
 function renderPreview() {
   document.getElementById("previewContainer").style.display = "block";
-
-  document.getElementById("previewModulo").textContent = moduloSelect.value;
-  document.getElementById("previewAssunto").textContent = assuntoSelect.value;
-  document.getElementById("previewEnunciado").textContent =
+  document.getElementById("pModulo").textContent = modulo.value;
+  document.getElementById("pAssunto").textContent = assunto.value;
+  document.getElementById("pEnunciado").textContent =
     document.getElementById("enunciado").value;
-
-  document.getElementById("previewBibliografia").textContent =
+  document.getElementById("pBibliografia").textContent =
     document.getElementById("bibliografia").value;
 
-  const previewAlt = document.getElementById("previewAlternativas");
-  previewAlt.innerHTML = "<strong>Alternativas:</strong>";
-
+  const pAlt = document.getElementById("pAlternativas");
+  pAlt.innerHTML = "<strong>Alternativas:</strong>";
   document.querySelectorAll("#alternativasContainer input[type='text']")
-    .forEach((el, i) => {
-      const p = document.createElement("div");
-      p.className = "preview-alternativa";
-      p.textContent = `${i+1}. ${el.value}`;
-      previewAlt.appendChild(p);
+    .forEach((el,i) => {
+      pAlt.innerHTML += `<div>${i+1}. ${el.value}</div>`;
     });
 
   const img = document.getElementById("previewImagem");
