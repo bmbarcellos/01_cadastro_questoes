@@ -14,23 +14,19 @@
   --true: #0F9D58;
   --false: #DB4437;
 }
-
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
   font-family: Inter, Roboto, Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
 }
-
 .header {
   background: var(--uff-blue);
   color: #fff;
   text-align: center;
   padding: 24px 16px;
 }
-
 .container {
   max-width: 960px;
   margin: 24px auto;
@@ -38,19 +34,8 @@ body {
   padding: 32px;
   border-radius: 8px;
 }
-
-label {
-  font-weight: 600;
-  display: block;
-  margin-top: 18px;
-}
-
-.notice {
-  color: var(--false);
-  font-size: 14px;
-  margin-top: 6px;
-}
-
+label { font-weight: 600; display: block; margin-top: 18px; }
+.notice { color: var(--false); font-size: 14px; margin-top: 6px; }
 input, select, textarea {
   width: 100%;
   padding: 12px;
@@ -59,34 +44,21 @@ input, select, textarea {
   border: 1px solid #D1D5DB;
   font-size: 16px;
 }
-
 textarea { min-height: 90px; }
-
 .section {
   margin-top: 25px;
   padding: 20px;
   background: var(--uff-light);
   border-radius: 8px;
 }
-
 .alternativa, .par {
   background: #fff;
   padding: 12px;
   border-radius: 6px;
   margin-top: 12px;
 }
-
-.par {
-  display: flex;
-  gap: 10px;
-}
-
-.toggle {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-
+.par { display: flex; gap: 10px; }
+.toggle { display: flex; gap: 10px; margin-top: 8px; }
 .toggle button {
   flex: 1;
   border: none;
@@ -96,11 +68,9 @@ textarea { min-height: 90px; }
   opacity: .5;
   cursor: pointer;
 }
-
 .toggle button.active { opacity: 1; }
 .btn-true { background: var(--true); }
 .btn-false { background: var(--false); }
-
 .add-par {
   margin-top: 16px;
   padding: 10px;
@@ -112,7 +82,6 @@ textarea { min-height: 90px; }
   font-weight: 600;
   cursor: pointer;
 }
-
 .submit {
   margin-top: 24px;
   padding: 14px;
@@ -123,11 +92,7 @@ textarea { min-height: 90px; }
   color: #fff;
   border: none;
 }
-
-.submit:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
+.submit:disabled { opacity: .6; cursor: not-allowed; }
 </style>
 </head>
 
@@ -169,7 +134,7 @@ textarea { min-height: 90px; }
 </select>
 
 <label>Assunto</label>
-<select id="assunto" disabled></select>
+<select id="assunto" disabled required></select>
 
 <label>Tipo de questão</label>
 <select id="tipo" required>
@@ -188,7 +153,7 @@ textarea { min-height: 90px; }
   <label>Enunciado</label>
   <textarea id="enunciadoCOR"></textarea>
   <div id="pares"></div>
-  <button type="button" class="add-par" onclick="addPar()">+ Adicionar novo par</button>
+  <button type="button" class="add-par" id="btnAddPar">+ Adicionar novo par</button>
 </div>
 
 <label>Bibliografia</label>
@@ -200,19 +165,93 @@ textarea { min-height: 90px; }
 </div>
 
 <script>
-const WEBHOOK_URL = "https://webhook.artideia.com.br/webhook/cadastro_questoes";
-let envioEmAndamento = false;
+document.addEventListener("DOMContentLoaded", () => {
 
-/* 🔹 (todo o JS original permanece exatamente igual) */
+  const assuntosPorModulo = { /* MESMO OBJETO QUE VOCÊ JÁ TEM */ };
 
-function addPar() {
-  const d = document.createElement("div");
-  d.className = "par";
-  d.innerHTML = `
-    <input required placeholder="Coluna A">
-    <input required placeholder="Coluna B">`;
-  pares.appendChild(d);
-}
+  const modulo = document.getElementById("modulo");
+  const assunto = document.getElementById("assunto");
+  const tipo = document.getElementById("tipo");
+  const multipla = document.getElementById("multipla");
+  const correlacao = document.getElementById("correlacao");
+  const alternativas = document.getElementById("alternativas");
+  const pares = document.getElementById("pares");
+  const btnAddPar = document.getElementById("btnAddPar");
+
+  modulo.onchange = () => {
+    assunto.innerHTML = "";
+    assunto.disabled = true;
+    if (!assuntosPorModulo[modulo.value]) return;
+    assunto.disabled = false;
+    assunto.innerHTML = '<option value="">Selecione</option>';
+    assuntosPorModulo[modulo.value].forEach(a => {
+      const opt = document.createElement("option");
+      opt.value = a;
+      opt.textContent = a;
+      assunto.appendChild(opt);
+    });
+  };
+
+  tipo.onchange = () => {
+    multipla.style.display = "none";
+    correlacao.style.display = "none";
+    alternativas.innerHTML = "";
+    pares.innerHTML = "";
+    enunciadoME.required = false;
+    enunciadoCOR.required = false;
+    if (tipo.value === "multipla") {
+      multipla.style.display = "block";
+      enunciadoME.required = true;
+      for (let i = 0; i < 5; i++) addAlternativa();
+    }
+    if (tipo.value === "correlacao") {
+      correlacao.style.display = "block";
+      enunciadoCOR.required = true;
+      for (let i = 0; i < 3; i++) addPar();
+    }
+  };
+
+  btnAddPar.onclick = () => addPar();
+
+  function addAlternativa() {
+    const d = document.createElement("div");
+    d.className = "alternativa";
+    d.dataset.correta = "false";
+    d.innerHTML = `
+      <input required placeholder="Alternativa">
+      <div class="toggle">
+        <button type="button" class="btn-true">Verdadeira</button>
+        <button type="button" class="btn-false active">Falsa</button>
+      </div>`;
+    const [v,f] = d.querySelectorAll("button");
+    v.onclick = () => {
+      document.querySelectorAll(".alternativa").forEach(a => {
+        a.dataset.correta = "false";
+        a.querySelector(".btn-true").classList.remove("active");
+        a.querySelector(".btn-false").classList.add("active");
+      });
+      v.classList.add("active");
+      f.classList.remove("active");
+      d.dataset.correta = "true";
+    };
+    f.onclick = () => {
+      f.classList.add("active");
+      v.classList.remove("active");
+      d.dataset.correta = "false";
+    };
+    alternativas.appendChild(d);
+  }
+
+  function addPar() {
+    const d = document.createElement("div");
+    d.className = "par";
+    d.innerHTML = `
+      <input required placeholder="Coluna A">
+      <input required placeholder="Coluna B">`;
+    pares.appendChild(d);
+  }
+
+});
 </script>
 
 </body>
