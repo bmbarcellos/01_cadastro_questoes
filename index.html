@@ -204,8 +204,24 @@ textarea { min-height: 90px; }
 
 <script>
 const WEBHOOK_URL = "https://webhook.artideia.com.br/webhook/cadastro_questoes";
-let envioEmAndamento = false;
+let envioEmAndamento = false; 
 
+  const submitBtn = document.getElementById("submitBtn");
+  
+  submitBtn.addEventListener("click", e => {
+  if (envioEmAndamento) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
+
+window.addEventListener("beforeunload", e => {
+  if (envioEmAndamento) {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+});
+  
 /* ========= ASSUNTOS ========= */
 const assuntosPorModulo = {
   "Anestesiologia": ["Avaliação pré-anestésica","Anestesia geral","Bloqueios centrais","Monitorização","Reanimação cardiopulmonar","Reposição volêmica","Intubação orotraqueal e oxigenoterapia","Segurança do paciente","Gerenciamento da dor","Complicações em anestesia"],
@@ -316,11 +332,17 @@ imagemCOR.onchange = () => {
 /* ========= ENVIO DO FORMULÁRIO ========= */
 questaoForm.onsubmit = async e => {
   e.preventDefault();
+
   if (envioEmAndamento) return;
 
   envioEmAndamento = true;
-  submitBtn.disabled = true;
 
+  // trava imediatamente
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Enviando...";
+  submitBtn.style.opacity = "0.6";
+  submitBtn.style.cursor = "not-allowed";
+  
   // validação condicional de módulo → assunto
   if (modulo.value && !assunto.value) {
     alert("Selecione o assunto da questão.");
@@ -408,7 +430,11 @@ questaoForm.onsubmit = async e => {
     alert("Erro ao enviar a questão.");
   } finally {
     envioEmAndamento = false;
+
     submitBtn.disabled = false;
+    submitBtn.textContent = "Enviar questão";
+    submitBtn.style.opacity = "";
+    submitBtn.style.cursor = "";
   }
 };
 </script>
