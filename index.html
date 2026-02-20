@@ -344,23 +344,35 @@ questaoForm.onsubmit = async e => {
   submitBtn.style.cursor = "not-allowed";
   
   // validação condicional de módulo → assunto
-  if (modulo.value && !assunto.value) {
-    alert("Selecione o assunto da questão.");
-    envioEmAndamento = false;
-    submitBtn.disabled = false;
-    return;
-  }
+if (modulo.value && !assunto.value) {
+  alert("Selecione o assunto da questão.");
+
+  envioEmAndamento = false;
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Enviar questão";
+  submitBtn.style.opacity = "";
+  submitBtn.style.cursor = "";
+
+  return;
+}
 
   // validação de múltipla escolha: 1 alternativa correta
-  if (tipo.value === "multipla") {
-    const corretas = [...document.querySelectorAll(".alternativa")].filter(a => a.dataset.correta === "true");
-    if (corretas.length !== 1) {
-      alert("Marque exatamente uma alternativa como correta.");
-      envioEmAndamento = false;
-      submitBtn.disabled = false;
-      return;
-    }
+if (tipo.value === "multipla") {
+  const marcada = alternativas.querySelector("input[type='radio']:checked");
+  if (!marcada) {
+    alert("Selecione a alternativa correta.");
+
+    envioEmAndamento = false;
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Enviar questão";
+    submitBtn.style.opacity = "";
+    submitBtn.style.cursor = "";
+
+    return;
   }
+}
 
   const payload = {
     email: email.value,
