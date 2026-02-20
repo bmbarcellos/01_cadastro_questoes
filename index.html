@@ -357,10 +357,12 @@ if (modulo.value && !assunto.value) {
   return;
 }
 
-  // validação de múltipla escolha: 1 alternativa correta
+// validação de múltipla escolha: 1 alternativa correta
 if (tipo.value === "multipla") {
-  const marcada = alternativas.querySelector("input[type='radio']:checked");
-  if (!marcada) {
+  const correta = [...document.querySelectorAll(".alternativa")]
+    .some(a => a.dataset.correta === "true");
+
+  if (!correta) {
     alert("Selecione a alternativa correta.");
 
     envioEmAndamento = false;
